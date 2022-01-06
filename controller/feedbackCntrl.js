@@ -2,12 +2,10 @@ const mongoose = require("mongoose");
 const randomstring = require("randomstring");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-const sendmail = require("sendmail")();
+
 const jwt = require("jsonwebtoken");
 const userModel = require("../model/userModel.js");
 const feedbackModel = require("../model/feedbackModel.js");
-const auth = require("../middleware/auth");
-const random = require("mongoose-random");
 
 const getUsers = async (req, res) => {
   try {
@@ -39,8 +37,8 @@ const createUser = async (req, res) => {
       port: 465,
       host: "smtp.gmail.com",
       auth: {
-        user: "newsll321@gmail.com",
-        pass: "News@123",
+        user: process.env.EMAIL,
+        pass: process.env.KEY,
       },
       secure: true, // upgrades later with STARTTLS -- change this based on the PORT
     });
@@ -48,11 +46,13 @@ const createUser = async (req, res) => {
     // // send mail with defined transport object
     let info = transporter.sendMail(
       {
-        from: "newsll321@gmail.com",
-        to: "newsll321@gmail.com",
+        from: process.env.EMAIL,
+        to: req.body.user_email,
         subject: "Credentials",
         text: `text`,
-        html: `<b>Hey there! </b><br> This is your login credentials: ${newpassword}<br/>`,
+        html: `<b>Hey there! </b><br> This is your login credentials. 
+        Username: ${req.body.user_email} 
+         Password: ${newpassword}<br/> `,
       },
       (error, info) => {
         if (error) {
@@ -69,7 +69,7 @@ const createUser = async (req, res) => {
       { user_id: newUser._id, email: newUser.user_email },
       process.env.TOKEN_KEY,
       {
-        expiresIn: "2h",
+        expiresIn: "5h",
       }
     );
     // save user token
