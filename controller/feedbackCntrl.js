@@ -123,10 +123,7 @@ const loginUser = async (req, res) => {
 //dashboard
 const dashboard = async (req, res) => {
   try {
-    let users = await userModel.aggregate([
-      { $sample: { size: 3 } },
-      "_id user_name profile_pic",
-    ]);
+    let users = await userModel.aggregate([{ $sample: { size: 3 } }]);
     console.log(users);
     res.status(200).json({ success: true, users: users });
   } catch (error) {
