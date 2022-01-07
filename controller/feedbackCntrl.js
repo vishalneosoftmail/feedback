@@ -124,7 +124,7 @@ const loginUser = async (req, res) => {
 const dashboard = async (req, res) => {
   try {
     let users = await userModel.aggregate([{ $sample: { size: 3 } }]);
-    console.log(users);
+    // console.log(users);
     res.status(200).json({ success: true, users: users });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -134,7 +134,9 @@ const dashboard = async (req, res) => {
 const sendFeedback = async (req, res) => {
   try {
     const newFeedback = new feedbackModel({
-      user_id: req.body.user_id,
+      // user_id: req.body.user_id,
+      sender_id: req.body.sender_id,
+      recevier_id: req.body.recevier_id,
       feedback: req.body.feedback,
     });
     await newFeedback.save();
@@ -150,11 +152,11 @@ const sendFeedback = async (req, res) => {
 const getFeedback = async (req, res) => {
   try {
     const allFeedback = await feedbackModel.find(
-      { user_id: req.body.user_id },
+      // { user_id: req.body.user_id },
+      { recevier_id: req.body.user_id },
       "feedback"
     );
     res.status(200).json({ success: true, feedback: allFeedback });
-    // res.status(200).send("Welcome 🙌 ");
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }

@@ -46,13 +46,17 @@ const loginValidation = async (req, res, next) => {
 
 //send feedback
 const validation_feedback = joi.object({
-  user_id: joi.string().required(),
+  // user_id: joi.string().required(),
+  sender_id: joi.string().required(),
+  recevier_id: joi.string().required(),
   feedback: joi.string().required(),
 });
 
 const feedbackValidation = (req, res, next) => {
   const payload = {
-    user_id: req.body.user_id,
+    // user_id: req.body.user_id,
+    sender_id: req.body.sender_id,
+    recevier_id: req.body.recevier_id,
     feedback: req.body.feedback,
   };
   const { error } = validation_feedback.validate(payload);
